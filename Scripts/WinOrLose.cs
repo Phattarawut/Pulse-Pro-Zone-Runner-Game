@@ -16,6 +16,8 @@ public class WinOrLose : MonoBehaviour
 
     public bool win;
     public bool lose;
+    private bool hasLost = false; // Flag to ensure Lose() is only called once
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,12 +34,12 @@ public class WinOrLose : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (timer.remainingTime < 0) 
+        if (timer.remainingTime < 0)
         {
             win = true;
             CheckSceneAndHandleWinner();
         }
-        if (health.currentHealth == 0)
+        if (health.currentHealth == 0 && !hasLost)
         {
             lose = true;
             Lose();
@@ -57,19 +59,23 @@ public class WinOrLose : MonoBehaviour
             Winner();
         }
     }
+
     public void Winner()
     {
         Time.timeScale = 0f;
         winnerMenu.SetActive(true);
         historyInfo.SendNewHistory();
     }
+
     public void Lose()
     {
         Time.timeScale = 0f;
         manager.playerScore = 0;
         deadMenu.SetActive(true);
         historyInfo.SendNewHistory();
+        hasLost = true; // Ensure Lose() is only called once
     }
+
     public void HandleZone3Winner()
     {
         Time.timeScale = 0f;
