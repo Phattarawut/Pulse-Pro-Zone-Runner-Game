@@ -25,6 +25,29 @@ public class HistoryInfo : MonoBehaviour
     public static List<HistoryData> historyData = new List<HistoryData>();
     private const string historyKey = "historyEntries";
 
+    private void Start()
+    {
+        LoadHistory();
+    }
+
+    private void LoadHistory()
+    {
+        if (PlayerPrefs.HasKey(historyKey))
+        {
+            string savedData = PlayerPrefs.GetString(historyKey);
+            string[] entries = savedData.Split('#');
+            historyData.Clear(); // Clear current data to avoid duplicates
+            foreach (string entry in entries)
+            {
+                string[] data = entry.Split('|');
+                if (data.Length == 4)
+                {
+                    historyData.Add(new HistoryData(data[0], data[1], data[2], data[3]));
+                }
+            }
+        }
+    }
+
     public void SendHistoryData(string date, string gameMode, string calories, string heartRate)
     {
         historyData.Add(new HistoryData(date, gameMode, calories, heartRate));
